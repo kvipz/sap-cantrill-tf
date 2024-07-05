@@ -4,6 +4,12 @@ terraform {
       source = "hashicorp/aws"
     }
   }
+  backend "s3" {
+    region         = "us-east-1"
+    bucket         = "tf-state-06072024"
+    key            = "bootstrap.tf"
+    dynamodb_table = "tf-state-lock"
+  }
 }
 
 provider "aws" {
