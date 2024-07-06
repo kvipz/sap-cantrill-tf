@@ -11,8 +11,9 @@ resource "aws_cloudfront_distribution" "s3_origin_top10cats" {
   aliases             = [local.custom_domain_name]
 
   origin {
-    domain_name = local.bucket_domain_name
-    origin_id   = local.bucket_domain_name
+    domain_name              = local.bucket_domain_name
+    origin_id                = local.bucket_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.top10cats.id
   }
 
   default_cache_behavior {
@@ -76,4 +77,11 @@ resource "aws_route53_record" "merlin" {
     zone_id                = aws_cloudfront_distribution.s3_origin_top10cats.hosted_zone_id
     evaluate_target_health = true
   }
+}
+
+resource "aws_cloudfront_origin_access_control" "top10cats" {
+  name                              = local.bucket_domain_name
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "no-override"
+  signing_protocol                  = "sigv4"
 }
